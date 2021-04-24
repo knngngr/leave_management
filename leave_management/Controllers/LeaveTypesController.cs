@@ -36,7 +36,14 @@ namespace leave_management.Controllers
         // GET: LeaveTypeController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            if (!_repo.IsExists(id))
+                return NotFound();
+
+            var leavType = _repo.FindById(id);
+            var model = _mapper.Map<LeaveTypeVM>(leavType);
+
+
+            return View(model);
         }
 
         // GET: LeaveTypeController/Create
@@ -81,7 +88,7 @@ namespace leave_management.Controllers
         // GET: LeaveTypeController/Edit/5
         public ActionResult Edit(int id)
         {
-            if(!_repo.IsExists(id))
+            if (!_repo.IsExists(id))
             {
                 return NotFound();
             }
@@ -105,7 +112,7 @@ namespace leave_management.Controllers
                 }
                 var leaveType = _mapper.Map<LeaveType>(model);
                 var isSuccess = _repo.Update(leaveType);
-                if(!isSuccess)
+                if (!isSuccess)
                 {
                     ModelState.AddModelError("", "Something went wrong...");
                     return View(model);
@@ -125,22 +132,44 @@ namespace leave_management.Controllers
         // GET: LeaveTypeController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
-        }
+            var leaveType = _repo.FindById(id);
+            if (leaveType == null)
+            {
+                return NotFound();
+            }
+            var isSuccess = _repo.Delete(leaveType);
+            if (!isSuccess)
+            {
+                return BadRequest();
+            }
+            return RedirectToAction(nameof(Index));
+        } 
 
         // POST: LeaveTypeController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Delete(int id,LeaveTypeVM model)
+        //{
+        //    try
+        //    {
+        //        var leaveType = _repo.FindById(id);
+        //        if(leaveType==null)
+        //        {
+        //            return NotFound();
+        //        }
+        //        var isSuccess = _repo.Delete(leaveType);
+        //        if(!isSuccess)
+        //        {
+                 
+        //        }
+
+        //        return RedirectToAction(nameof(Index));
+               
+        //    }
+        //    catch
+        //    {
+        //        return View(model);
+        //    }
+        //}
     }
 }
