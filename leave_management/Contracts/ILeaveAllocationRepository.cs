@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace leave_management.Contracts
 {
-   public  interface ILeaveAllocationRepository:IRepositoryBase<LeaveAllocation>
+    public interface ILeaveAllocationRepository : IRepositoryBase<LeaveAllocation>
     {
-        bool CheckAllocation(int leaveTypeId, string IdentityUserId);
-        ICollection<LeaveAllocation> GetLeaveAllocationsByEmployee(string id);
+        Task<bool> CheckAllocation(int leaveTypeId, string IdentityUserId);
+        Task<ICollection<LeaveAllocation>> GetLeaveAllocationsByEmployee(string id);
 
-       LeaveAllocation GetLeaveAllocationsByEmployeeAndType(string id,int leaveTypeId);
+        Task<LeaveAllocation> GetLeaveAllocationsByEmployeeAndType(string id, int leaveTypeId);
     }
 }
