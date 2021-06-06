@@ -16,6 +16,7 @@ using leave_management.Contracts;
 using leave_management.Repository;
 using leave_management.Mapping;
 using AutoMapper;
+using leave_management.Services;
 
 namespace leave_management
 {
@@ -38,6 +39,11 @@ namespace leave_management
             services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
             services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
             services.AddScoped<ILeaveAllocationRepository, LeaveAllocationRepository>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.AddSingleton<IEmailSender, EmailSender>();
+
             services.AddAutoMapper(typeof(Maps));
 
 

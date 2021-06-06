@@ -93,6 +93,13 @@ namespace leave_management.Areas.Identity.Pages.Account
                      _userManager.AddToRoleAsync(user, "Employee").Wait();
                     _logger.LogInformation("User created a new account with password.");
 
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+                    var callBackUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null, values: new {area="Identity",code=code,returnUrl=returnUrl,userId=user.Id}, protocol: Request.Scheme);
+
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirm Your Email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callBackUrl)}'> clicking here </a> ");
+
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
 
